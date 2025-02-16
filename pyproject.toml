@@ -10,7 +10,7 @@ requires-python = ">=3.12"
 dependencies = ['streamlit==1.36.0']
 
 [path]
-WINDOWS_HOST_PATH = "C:\Windows\System32\drivers\etc\hosts"
+WINDOWS_HOST_PATH = "C:\\Windows\\System32\\drivers\\etc\\hosts"
 LINUX_HOST_PATH = "/etc/hosts"
 WINDOWS_LOG_PATH = "logs\\host_log.cfg"
 LINUX_LOG_PATH = "logs/host_log.cfg"
