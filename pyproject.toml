@@ -1,16 +1,16 @@
-[build-system]
-requires = ["streamlit==1.36.0"]
-
 [project]
 name = "web-blocker"
 version = "0.1.0"
 description = "A simple website blocker but with unnecessary additions. "
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = ['streamlit==1.36.0']
+dependencies = [
+    "streamlit>=1.42.2",
+    "streamlit-shadcn-ui>=0.1.18",
+    "toml>=0.10.2",
+]
 
 [path]
-WINDOWS_HOST_PATH = "C:\Windows\System32\drivers\etc\hosts"
+WINDOWS_HOST_PATH = "D:\\Projects\\web-blocker\\host_lods_test.txt"
 LINUX_HOST_PATH = "/etc/hosts"
-WINDOWS_LOG_PATH = "logs\\host_log.cfg"
-LINUX_LOG_PATH = "logs/host_log.cfg"
+

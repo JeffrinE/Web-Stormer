@@ -2,6 +2,7 @@ import streamlit as st
 import streamlit_shadcn_ui as ui
 import time
 import main
+import dbcreator as db
 
 def notification(value: str):
     values = ('already_exists', 'blocked', 'unblocked')
@@ -15,18 +16,18 @@ def notification(value: str):
 st.header("Web Blocker")
 
 st.logo(
-    image="icons/app_blocking.png", size="large", link=None, icon_image=None
+    image=r"../icons/app_blocking.png", size="large", link=None, icon_image=None
 )
-st.sidebar.write("hallo semua")
+st.sidebar.write("Instructions")
 
 value = ui.tabs(options=['All', 'Block', 'UnBlock'], default_value='All', key="tabs")
 
 if value == "All":
     st.subheader("All Blocked")
     text = ""
-    at = main.show_blocked()
+    at = db.show_blocked()
     for line in at:
-        text += line.split(" ")[-1]
+        text += line[1]
     st.text(text)
 
 elif value == "Block":
