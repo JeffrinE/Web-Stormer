@@ -2,6 +2,7 @@ import streamlit as st
 import streamlit_shadcn_ui as ui
 import time
 import main
+import uuid
 import dbcreator as db
 
 def notification(value: str):
@@ -20,32 +21,43 @@ st.logo(
 )
 st.sidebar.write("Instructions")
 
-value = ui.tabs(options=['All', 'Block', 'UnBlock'], default_value='All', key="tabs")
+if "rows" not in st.session_state:
+    st.session_state["rows"] = []
 
-if value == "All":
-    st.subheader("All Blocked")
-    text = ""
-    at = db.show_blocked()
-    for line in at:
-        text += line[1]
-    st.text(text)
+rows_collection = []
 
-elif value == "Block":
-    st.subheader("Block Websites")
-    input_value = ui.input(default_value="", type='text', placeholder="Enter text here", key="input1")
-    blocked = ui.button("Click", key="clk_btn")
-    if blocked and input_value:
-        if main.is_website_blocked(input_value):
-            notification('already_exists')
-        else:
-            main.block_website(input_value)
-            notification('blocked')
+def add_row(url: str):
+    element_id = uuid.uuid4()
+    data = str(element_id)
+    st.session_state["rows"].append(data)
+    main.block_website(row_id=data, website=url)
 
-elif value == "UnBlock":
-    st.subheader("UnBlock Websites")
-    input_value = ui.input(default_value="", type='text', placeholder="Enter text here", key="input1")
-    blocked = ui.button("Click", key="clk_btn")
-    if blocked and input_value != "":
-        main.unblock_website(input_value)
-        notification('unblocked')
+def remove_row(row_id: str):
+    data = str(row_id)
+    main.unblock_website(row_id)
+    notification('unblocked')
+    st.session_state["rows"].remove(data)
 
+input_value = ui.input(default_value="", type='text', placeholder="Enter text here", key="input1")
+
+blocked = ui.button("Click", key="clk_btn")
+
+if blocked and input_value:
+    if main.is_website_blocked(input_value):
+        notification('already_exists')
+    else:
+        add_row(input_value)
+        notification('blocked')
+
+def generate_row(row_id):
+    row_container = st.empty()
+    row_columns = row_container.columns((3, 2, 1))
+    row_name = row_columns[0].text(db.show_from_id(row_id)[0])
+    row_columns[2].button("🗑️", key=f"del_{row_id}", on_click=remove_row, args=[row_id])
+    return {"name": row_name}
+
+for row in st.session_state["rows"]:
+    row_data = generate_row(row)
+    rows_collection.append(row_data)
+
+menu = st.columns(2)

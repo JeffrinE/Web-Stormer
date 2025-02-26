@@ -4,7 +4,7 @@ import toml
 import datetime
 import dbcreator as db
 
-with open(r'..\pyproject.toml', 'r') as cfg:
+with open('..\\pyproject.toml', 'r') as cfg:
     config = toml.load(cfg)
     
 if platform.system() == 'Windows':
@@ -29,7 +29,7 @@ def platform_path():
         return "unsupported"
 
 
-def block_website(website):
+def block_website(row_id: str, website: str):
     paths = platform_path()
     if paths == "unsupported":
         return
@@ -42,14 +42,15 @@ def block_website(website):
     
     with open(hosts_path, 'a') as hosts_file:
         hosts_file.write(f'\n{redirect} {website}\n')
-        db.add_to_db(url=website, date=datetime.datetime.now().date())
+        db.add_to_db(row_id=row_id, url=website, date=datetime.datetime.now().date())
         
     print(f'{website} is now blocked.')
     # else:
     #     print(f'Hosts file {hosts_path} not found.')
 
 
-def unblock_website(website):
+def unblock_website(row_id):
+
     paths = platform_path()
     if paths == "unsupported":
         return
@@ -57,20 +58,17 @@ def unblock_website(website):
         hosts_path, redirect =  paths 
     
     if os.path.exists(hosts_path):
+        url = db.show_from_id(row_id)[0]
         with open(hosts_path, 'r') as hosts_file:
             lines = hosts_file.readlines()
         
         with open(hosts_path, 'w') as hosts_file:
             for line in lines:
-                if not line.strip().endswith(f' {website}'):
+                if not line.strip().endswith(f' {url}'):
                     hosts_file.write(line)
 
-
-    db.remove_from_db(url=website)
-    print(f'{website} is now unblocked.')
-    # else:
-    #     print(f'Hosts file {hosts_path} not found.')
-
+    db.remove_from_db(row_id=row_id)
+    print(f"{url} is no unblocked")
 
 def is_website_blocked(website):
     paths = platform_path()
@@ -78,7 +76,6 @@ def is_website_blocked(website):
         return
     else:
         hosts_path, redirect =  paths 
-    
     
     urls = db.show_blocked()
     for url in urls:
