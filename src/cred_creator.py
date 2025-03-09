@@ -54,7 +54,9 @@ def change_password(user: str, og_passwd: str, new_passwd: str, confirm_passwd: 
         cur.execute("SELECT passwd FROM users WHERE user = (?);", (user, ))
         password = cur.fetchone()
         conn.commit()
-        if (og_passwd == password[0]):
+        auth = og_passwd.encode()
+        og_auth_hash = hashlib.sha256(auth).hexdigest()
+        if (og_auth_hash == password[0]):
             if (new_passwd == confirm_passwd):
                 auth = new_passwd.encode()
                 auth_hash = hashlib.sha256(auth).hexdigest()
@@ -64,7 +66,7 @@ def change_password(user: str, og_passwd: str, new_passwd: str, confirm_passwd: 
         else:
             print("An Error has occured during password change")
             return False
-
+        
 
 auth = "1234".encode()
 auth_hash = hashlib.sha256(auth).hexdigest()

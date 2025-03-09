@@ -10,28 +10,30 @@ if 'vote' not in st.session_state:
     st.session_state['voted'] = False
     st.session_state['new_passwd'] = None
 
-def notification(val: str):
+def notification_passwd(val: str):
     values = ['error', 'success']
     if val == values[0]:
-        st.toast("An Error has occured. Please check your password.", icon='🔒')
+        st.toast("An Error has occured. Please check your password.", icon='🚫')
     else:
-        st.toast("Password change successfull", icon='🚫')
+        st.toast("Password change successful", icon='🔒')
 
-@st.dialog("Cast your vote")
+@st.dialog("Enter credentials")
 def change_password(item):
     if st.session_state['voted']:
         st.write(f"Change Your Password")
+        user = st.text_input("Username", type="default")
         og_passwd = st.text_input("Original Password", type="password")
         new_passwd = st.text_input("New Password", type="password")
         confirm_passwd = st.text_input("Confirm Password", type="password")
         if st.button("Submit"):
             st.session_state.new_passwd = {og_passwd, new_passwd, confirm_passwd}
-            is_changed = cd.change_password("admin", og_passwd=og_passwd, new_passwd=new_passwd, confirm_passwd=confirm_passwd)
+            is_changed = cd.change_password(user=user, og_passwd=og_passwd, new_passwd=new_passwd, confirm_passwd=confirm_passwd)
             if is_changed:
+                notification_passwd('success')
                 pass
             else:
-                notification()
-                time.sleep(2)
+                notification_passwd("error")
+                time.sleep(5)
             st.rerun()
 
 
@@ -50,11 +52,14 @@ def main_page():
     input_value = ui.input(default_value="", type='text', placeholder="Enter text here", key="input1")
     blocked = ui.button("Click", key="clk_btn")
 
-    st.sidebar.write("Instructions")
+    st.sidebar.write("Instructions:"
+    "Type in the website you wish to block and click enter."
+    "You will receive a notification to show if the website has been blocked or already in the blocklist."
+    "Click on the 'TrashBin' to the right of each blocked website to unblock it." )
     change_passwd = st.sidebar.container(border=True)
-    change_passwd.write("Change Password")
+    change_passwd.write("Change Password Here")
 
-    if change_passwd.button("Change Password"):
+    if change_passwd.button("Click Here"):
         st.session_state['voted'] = True
         change_password('A')
 
@@ -79,7 +84,7 @@ def main_page():
         notification('unblocked')
         st.session_state["rows"].remove(data)
 
-    if blocked and input_value:
+    if blocked and (input_value.strip() != ""):
         if main.is_website_blocked(input_value):
             notification('already_exists')
         else:
@@ -106,7 +111,7 @@ def notification():
 st.title("Welcome Back")
 
 if "page" not in st.session_state:
-    st.session_state.page = "login"#login change to login fgrvcbsjdc
+    st.session_state.page = "login"
 if "userid" not in st.session_state:
     st.session_state.userid = ""
 
@@ -114,7 +119,7 @@ def next(action, username, passd):
     if action == "login":
         passwd = cd.is_user_in_db(user=username, passwd=str(passd))
         if passwd:
-            st.session_state.page = "feed" # Go to next page
+            st.session_state.page = "feed"
         else:
             st.session_state.page="login"
             notification()
@@ -123,7 +128,7 @@ placeholder = st.empty()
 if st.session_state.page == "login":
     placeholder.empty()
     username = st.text_input("User Name",type="default",placeholder="username")
-    passd = st.text_input("User ID",type="password",placeholder="4 digit pin")
+    passd = st.text_input("User ID",type="password",placeholder="password here")
     if st.button("login",on_click=next,args=("login", username, str(passd))):
         pass
 elif st.session_state.page == "feed":
