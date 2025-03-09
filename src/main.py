@@ -4,9 +4,8 @@ import toml
 import datetime
 import dbcreator as db
 
-with open('..\\pyproject.toml', 'r') as cfg:
+with open('pyproject.toml', 'r') as cfg:
     config = toml.load(cfg)
-    
 if platform.system() == 'Windows':
     log_path = config['path']['WINDOWS_HOST_PATH']
 elif platform.system() == 'Linux':

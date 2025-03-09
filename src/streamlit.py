@@ -16,15 +16,20 @@ def notification(value: str):
 
 st.header("Web Blocker")
 
-st.logo(
-    image=r"../icons/app_blocking.png", size="large", link=None, icon_image=None
-)
+# st.logo(
+#     image=r"../icons/app_blocking.png", size="large", link=None, icon_image=None
+# )
 st.sidebar.write("Instructions")
 
 if "rows" not in st.session_state:
+    ids = db.get_uuids()
     st.session_state["rows"] = []
+    print(ids)
+    st.session_state["rows"] += ids
 
+ids = db.get_uuids()
 rows_collection = []
+rows_collection += ids
 
 def add_row(url: str):
     element_id = uuid.uuid4()
@@ -55,6 +60,7 @@ def generate_row(row_id):
     row_name = row_columns[0].text(db.show_from_id(row_id)[0])
     row_columns[2].button("🗑️", key=f"del_{row_id}", on_click=remove_row, args=[row_id])
     return {"name": row_name}
+
 
 for row in st.session_state["rows"]:
     row_data = generate_row(row)
