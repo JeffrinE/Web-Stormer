@@ -9,4 +9,3 @@ wheels/
 # Virtual environments
 .venv
 __pycache__
-uv.lock
