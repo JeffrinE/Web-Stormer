@@ -17,6 +17,7 @@ else:
 
 cur = conn.cursor()
 
+
 cur.execute("""
             CREATE TABLE IF NOT EXISTS urls(
             id varchar(255) PRIMARY KEY,
