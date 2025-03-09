@@ -5,6 +5,7 @@ description = "A simple website blocker but with unnecessary additions. "
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "required>=0.4.0",
     "streamlit>=1.42.2",
     "streamlit-shadcn-ui>=0.1.18",
     "toml>=0.10.2",
@@ -14,5 +15,7 @@ dependencies = [
 [path]
 WINDOWS_HOST_PATH = "D:\\Projects\\web-blocker\\host_lods_test.txt"
 WINDOWS_LOG_PATH = "logs\\host_log.cfg"
+URL_DATABASE_WINDOWS = "database\\urls.db"
 LINUX_HOST_PATH = "/etc/hosts"
 LINUX_LOG_PATH = "logs/host_log.cfg"
+URL_DATABASE_LINUX = "database/urls.db"
